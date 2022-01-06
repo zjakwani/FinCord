@@ -15,6 +15,8 @@ from discord.ext import commands
 from nltk.stem import WordNetLemmatizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 
+import creditinfo
+
 lemmatizer = WordNetLemmatizer()
 
 help_command = commands.DefaultHelpCommand(
@@ -70,7 +72,13 @@ async def on_message(message):
 
             
     await bot.process_commands(message)
-    
+
+card_info = creditinfo.get_card_info('credit_info.csv')
+
+@bot.command(name='compare', help='compare capital one credit cards')
+async def compare(ctx, c1: str, c2: str):
+    res = creditinfo.compare_cards(c1, c2, card_info)
+    await ctx.send(res)
         
 @bot.command(name='retire', help='How much money do I need to retire? Input monthly budget.')
 async def retire(ctx, monthly_budget: int):
