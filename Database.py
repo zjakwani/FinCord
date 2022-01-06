@@ -1,12 +1,19 @@
 import csv
+import nltk
+nltk.download('omw-1.4')
 
 import firebase_admin
-    
+nltk.download('wordnet')
+from nltk.stem import WordNetLemmatizer
+
 from firebase_admin import credentials
 
 from firebase_admin import db
 
 cred = credentials.Certificate("key.json")
+
+lemmatizer = WordNetLemmatizer()
+
 
 # Client code will call this function when the dictionary of financial of terms and 
 # their respective definitions will need to be populated. 
@@ -21,9 +28,10 @@ def read_data():
 
     snapshot = ref.get()
     for key, val in snapshot.items():
-   
+
+
         map_dict = {
-            'term': str(val.get('term')),
+            'term': lemmatizer.lemmatize(str(val.get('term')).lower()),
             'definition': str(val.get('definition'))
         }
 
@@ -56,3 +64,4 @@ def push_data():
 
 if __name__ == '__main__':
     push_data()
+    # read_data()
