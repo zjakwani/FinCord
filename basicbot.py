@@ -39,6 +39,7 @@ f = open('nlp/vectorizer.pickle', 'rb')
 vectorizer = pickle.load(f)
 f.close()
 import calculator
+import calculator2
 
 
 @bot.event
@@ -83,8 +84,28 @@ async def compound(ctx, principal: int, years: int, interest_rate: int = 6, n: i
     await ctx.send(res)
 
 @bot.command(name='when', help="How many years until I can retire? Input monthly budget, amount you can save annually, amount already saved, and current age. Optionally input annual interest rate (for your savings) as a percent and/or desired retirement age.")
-async def compound(ctx, monthly_budget: int, save_annually: int, amount_saved: int, cur_age: int, interest_rate: int = 6, retire_age: int = 65):
+async def when(ctx, monthly_budget: int, save_annually: int, amount_saved: int, cur_age: int, interest_rate: int = 6, retire_age: int = 65):
     res = calculator.retirement_age(monthly_budget, save_annually, amount_saved, cur_age, interest_rate, retire_age)
+    await ctx.send(res)
+
+@bot.command(name='loan', help="Calculates total cost of a loan. Inputs: Starting loan amount (principal), interest rate (% APR as a decimal), and length of the loan term in months.")
+async def loanCalculator(ctx, principal: int, apr: int, term_in_months: int):
+    res = calculator2.loanCalculator(principal, apr, term_in_months)
+    await ctx.send(res)
+
+@bot.command(name='loancomp', help="Compares two loans. Loan terms in years. Returns the total cost of Loan 1, total cost of Loan 2, and then the dollar difference between the loans' totals.")
+async def loanComparison(ctx, loanAmt: int, loanInterest1: int, loanTerm1: int, loanInterest2: int, loanTerm2: int):
+    res = calculator2.loanComparison(loanAmt, loanInterest1, loanTerm1, loanInterest2, loanTerm2)
+    await ctx.send(res)
+
+@bot.command(name='credit', help="How long until my credit card is paid off? Assumes that payments are made at the end of each month, after interest has been accrued. Inputs: Starting credit card balance, card interest rate (% APY), expected payment per-month.")
+async def credit(ctx, card_balance: int, interest_rate: int, ppm: int):
+    res = calculator2.creditCardPayoff(card_balance, interest_rate, ppm)
+    await ctx.send(res)
+
+@bot.command(name='401k', help="401k retirement planner. Assumption: All contributions, including match, are made at the end of the year. Inputs: Current Account Value, Salary, Expected Annual Raise (in %), Expected Annual Contribution, Employer 401k Match (in %), Expected Investment Return (in %), and number of total years.")
+async def retirement401kcalc(ctx, current_amt: int, salary: int, annual_raise: int, contribution: int, employer_match: int, investment_return: int, years: int):
+    res = calculator2.retirement401kcalc(current_amt, salary, annual_raise, contribution, employer_match, investment_return, years, [])
     await ctx.send(res)
 
 key = open('key.txt').read()
