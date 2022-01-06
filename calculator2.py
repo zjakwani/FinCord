@@ -168,8 +168,8 @@ def retirement401kcalc(current_amt, salary, annual_raise, contribution, employer
         else:
             match_amt = salary * employer_match
         current_amt = (current_amt * (1 + investment_return)) + contribution + match_amt
-        salary *= (1 + annual_raise)
         annual_balances.append(current_amt)
+        salary *= (1 + annual_raise)
         years = years - 1
         return retirement401kcalc(current_amt, salary, annual_raise, contribution, employer_match, investment_return, years, annual_balances)
 
