@@ -57,13 +57,13 @@ def realInvestmentReturns(value, growth_rate, inflation_rate, fee, tax_rate, yea
     else:
         value = ((value * (1 + growth_rate)) - (value * (1 + inflation_rate))) * (1 - fee) * (1 - tax_rate)
         years -= 1
-        realInvestmentReturns(value, growth_rate, inflation_rate, fee, tax_rate, years)
+        return "Your real returns are $" + str(int(realInvestmentReturns(value, growth_rate, inflation_rate, fee, tax_rate, years)))
 
 
 # Calculate annual rate of return of investment based on beginning amount, final amount and number of years.
 # Inputs: Starting amount, ending amount, total time in years
 def investmentCAGRCalculator(principal, final_amt, time_in_years):
-    return ((final_amt / principal)**(1/time_in_years)) - 1
+    return "Your rate of return is " + str(((final_amt / principal)**(1/time_in_years)) - 1)
 
 # Given a rate of inflation, calculates the "real" value of dollar amount after a given number of years.
 # Inputs: Starting value, given inflation rate (as a %), and number of years
