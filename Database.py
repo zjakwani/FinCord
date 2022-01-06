@@ -1,5 +1,6 @@
 import csv
 import nltk
+from nltk.util import pr
 nltk.download('omw-1.4')
 
 import firebase_admin
@@ -29,12 +30,9 @@ def read_data():
     snapshot = ref.get()
     for key, val in snapshot.items():
 
-
-        map_dict = {
-            'term': lemmatizer.lemmatize(str(val.get('term')).lower()),
-            'definition': str(val.get('definition'))
-        }
-
+        term = lemmatizer.lemmatize(str(val.get('term')).lower())
+        map_dict[term] = str(val.get('definition'))
+        
     return map_dict
 
 # Function will only be run when explicitly ran as a main python file
