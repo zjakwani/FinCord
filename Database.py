@@ -21,8 +21,7 @@ def read_data():
 
     snapshot = ref.get()
     for key, val in snapshot.items():
-        print('{0} is value'.format(val))
-        print("Value ")
+   
         map_dict = {
             'term': str(val.get('term')),
             'definition': str(val.get('definition'))
