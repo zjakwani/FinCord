@@ -7,17 +7,16 @@ import nltk
 from nltk import ngrams
 from nltk.util import pr
 
-from utils.Database import read_data
-from utils.creditinfo import *
 from utils.calculator import *
 from utils.calculator2 import *
+from utils.creditinfo import *
+from utils.Database import read_data
 
 nltk.download('wordnet')
 
 from discord.ext import commands
 from nltk.stem import WordNetLemmatizer
 from sklearn.feature_extraction.text import TfidfVectorizer
-
 
 lemmatizer = WordNetLemmatizer()
 
@@ -113,9 +112,9 @@ async def credit_(ctx, card_balance: int, interest_rate: int, ppm: int):
     res = creditCardPayoff(card_balance, interest_rate, ppm)
     await ctx.send(res)
 
-@bot.command(name='401k', help="401k retirement planner. Assumption: All contributions, including match, are made at the end of the year. Inputs: Current Account Value, Salary, Expected Annual Raise (in %), Expected Annual Contribution, Employer 401k Match (in %), Expected Investment Return (in %), and number of total years.")
-async def retirement401kcalc_(ctx, current_amt: int, salary: int, annual_raise: int, contribution: int, employer_match: int, investment_return: int, years: int):
-    res = retirement401kcalc(current_amt, salary, annual_raise, contribution, employer_match, investment_return, years, [])
+@bot.command(name='max401k', help="401k retirement planner. Assumption: All contributions, including match, are made at the end of the year. Inputs: Current Account Value, Salary, Expected Annual Raise (in %), Expected Annual Contribution, Employer 401k Match (in %), Expected Investment Return (in %), and number of total years.")
+async def max401kcalc_(ctx, age: int):
+    res = maxContributions401k(age)
     await ctx.send(res)
 
 @bot.command(name='returns', help="Calculates 'real' investment returns given an initial value, and average annual growth rate, an average annual inflation rate, a fee amount as percent, and a tax rate as percent. Essentially, values are used to calculate 'real' investment returns, after inflation, fees, and taxes.")
@@ -128,12 +127,37 @@ async def investmentCAGRCalculator_(ctx, principal: int, final_amt: int, time_in
     res = investmentCAGRCalculator(principal, final_amt, time_in_years)
     await ctx.send(res)
 
-@bot.command(name='max401k', help="# Returns the maximum amount of yearly contributions allowed to a 401k based on age (based on 2022). Inputs: Age")
+@bot.command(name='401k', help="401k retirement planner. Assumption: All contributions, including match, are made at the end of the year. Inputs: Current Account Value, Salary, Expected Annual Raise (in %), Expected Annual Contribution, Employer 401k Match (in %), Expected Investment Return (in %), and number of total years.")
 async def retirement401kcalc_(ctx, current_amt: int, salary: int, annual_raise: int, contribution: int, employer_match: int, investment_return: int, years: int):
+    annual_raise /= 100
+    employer_match /= 100
+    investment_return /= 100
     res = retirement401kcalc(current_amt, salary, annual_raise, contribution, employer_match, investment_return, years, [])
     e=discord.Embed(title="401k Retirement Planner", description=res[0])
     e.set_image(url=res[1])
     await ctx.send(embed=e)
+
+@bot.command(name='inflation', help="Calculates inflation over time. Given a rate of inflation, calculates the 'real' value of dollar amount after a given number of years. Inputs: Starting value, given inflation rate (as a %), and number of years")
+async def futureInflationCalculator_(ctx, value: int, given_inflation_rate: int, years: int):
+    res = futureInflationCalculator(value, given_inflation_rate, years, [])
+    e=discord.Embed(title="The real value of your money after inflation", description=res[0])
+    e.set_image(url=res[1])
+    await ctx.send(embed=e)
+
+@bot.command(name='roth', help="Max annual Roth IRA contributions. Returns the maximum amount of yearly contributions allowed to a Roth IRA based on age and income (based on 2022). Inputs: Age, Household Income")
+async def maxContributionsRothIRA_(ctx, age: int, household_income: int):
+    res = maxContributionsRothIRA(age, household_income)
+    await ctx.send(res)
+
+@bot.command(name='college', help="How should I pay off my college loans? Returns the percent of income put towards loans in order to pay them off within a given number of years. Assumes interest still accumulates while in school and that payments only begin after graduation. Inputs: College savings, tuition cost per year, expected years of school attendance, desired years after school until loan is payed off, and expected salary after graduation. Outputs: Estimated yearly cost of loans, estimated percent of salary put towards student loans.")
+async def collegeAffordibilityCalculator_(ctx, balance: int, tuition_rate: int, years_of_school: int, loan_interest: int, years_until_paid: int, expected_postgrad_salary: int):
+    res = collegeAffordibilityCalculator(balance, tuition_rate, years_of_school, loan_interest, years_until_paid, expected_postgrad_salary)
+    await ctx.send(res)
+
+@bot.command(name='list', help="Lists all commands.")
+async def realInvestmentReturns_(ctx):
+    res = all_commands()
+    await ctx.send(res)
 
 key = open('key.txt').read()
 bot.run(key)
