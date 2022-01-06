@@ -27,10 +27,23 @@ def get_card_info(csv_path):
     return card_info
 
 def compare_cards(c1, c2, card_info):
+    if c1 not in card_info:
+        return c1 + ' not found'
+    if c2 not in card_info:
+        return c2 + ' not found'
+
     c1_data = card_info[c1]
     c2_data = card_info[c2]
+    
+    data = []
+    for c1_, c2_, name in zip(c1_data[1:-1], c2_data[1:-1], ["Purchase Rate", "Transfer Info", "Annual Fee", "Credit Level"]):
+        data.append([name, c1_, c2_])
+    
     descrip1 = c1_data[-1]
     descrip2 = c2_data[-1]
     out_str = c1 + ': ' + descrip1 + '\n\n' + c2 + ': ' + descrip2 + '\n\n'
-    out_str += tabulate([c1_data[:-1], c2_data[:-1]], headers=["Name", "Purchase Rate", "Transfer Info", "Annual Fee", "Credit Level"])
+    out_str += tabulate(data, headers=['', c1, c2])
     return out_str
+
+card_info = get_card_info('credit_info.csv')
+print(compare_cards('Venture Rewards', 'Platinum Mastercard', card_info))
