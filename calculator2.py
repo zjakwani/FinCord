@@ -133,18 +133,18 @@ def creditCardPayoffSub(card_balance, interest_rate, ppm, balance_tracker, month
 # Inputs: Age
 def maxContributions401k(age):
     if (age < 50):
-        return 20,500
+        return "The maximum amount you can contribute to a 401k is $20,500"
     else:
-        return 27,000
+        return "The maximum amount you can contribute to a 401k is $27,000"
 
 # Returns the maximum amount of yearly contributions allowed to a Roth IRA based on age and income (based on 2022)
 # Inputs: Age, Household Income
 def maxContributionsRothIRA(age, household_income):
     if (age < 50) and (household_income < 193,000):
-        return "The maximum amount of money you can contribute to a Roth IRA this year is 6,000"
+        return "The maximum amount of money you can contribute to a Roth IRA this year is $6,000"
 
     elif (household_income < 193,000):
-        return "The maximum amount of money you can contribute to a Roth IRA this year is 7,000"
+        return "The maximum amount of money you can contribute to a Roth IRA this year is $7,000"
     else:
         return "You cannot contribute to a Roth IRA."
 
