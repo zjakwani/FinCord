@@ -159,8 +159,7 @@ def retirement401kcalc(current_amt, salary, annual_raise, contribution, employer
     investment_return /= 100
     if (years == 0):
         # Returns the final account value, and a link to the graph for the account.
-        output = "Final account value: $" + str(int(current_amt))
-        output += "\n" + valueTimeCharting(annual_balances, "401k Account Value", "rgb(0, 72, 121)")
+        output = ["Final account value: $" + str(int(current_amt), valueTimeCharting(annual_balances, "401k Account Value", "rgb(0, 72, 121)"))]
         return output
     else:
         if (contribution < (salary * employer_match)):
