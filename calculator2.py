@@ -96,7 +96,7 @@ def creditCardPayoff(card_balance, interest_rate, ppm):
     months = 0
     if (card_balance <= 0):
         balance_tracker.append(0)
-        return months, valueTimeCharting(balance_tracker, "Credit Card Debt", "rgb(210, 46, 30)")
+        return "Your credit card balance will take " + months + "months to pay off.", valueTimeCharting(balance_tracker, "Credit Card Debt", "rgb(210, 46, 30)")
     else:
         card_balance = card_balance * (1 + (interest_rate / 12)) - ppm
         balance_tracker.append(card_balance)
@@ -141,11 +141,12 @@ def maxContributions401k(age):
 # Inputs: Age, Household Income
 def maxContributionsRothIRA(age, household_income):
     if (age < 50) and (household_income < 193,000):
-        return 6,000
+        return "The maximum amount of money you can contribute to a Roth IRA this year is 6,000"
+
     elif (household_income < 193,000):
-        return 7,000
+        return "The maximum amount of money you can contribute to a Roth IRA this year is 7,000"
     else:
-        return 0
+        return "You cannot contribute to a Roth IRA."
 
 # 401k retirement planner
 # Assumption: All contributions, including match, are made at the end of the year.
