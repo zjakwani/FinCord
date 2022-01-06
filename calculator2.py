@@ -66,13 +66,13 @@ def investmentCAGRCalculator(principal, final_amt, time_in_years):
     return ((final_amt / principal)**(1/time_in_years)) - 1
 
 # Given a rate of inflation, calculates the "real" value of dollar amount after a given number of years.
-# Inputs: Starting value, given inflation rate, and number of years
+# Inputs: Starting value, given inflation rate (as a %), and number of years
 def futureInflationCalculator(value, given_inflation_rate, years, value_tracker):
     if (years == 0):
         return value, valueTimeCharting(value_tracker, "Dollar Value (Real)", "rgb(210, 46, 30)")
     else:
         value_tracker.append(value)
-        value = value * (1 - given_inflation_rate)
+        value = value * ((100 - (given_inflation_rate)) / 100)
         years -= 1
         return futureInflationCalculator(value, given_inflation_rate, years, value_tracker)
 
