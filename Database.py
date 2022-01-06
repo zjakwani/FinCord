@@ -12,8 +12,9 @@ def push_data():
 
     cred = credentials.Certificate("key.json")
 
+    url_key = open("api_key.txt").read()
     firebase_admin.initialize_app(cred, {
-        'databaseURL': "https://fincord-49cc7-default-rtdb.firebaseio.com/"
+        'databaseURL': url_key
     })
     ref = db.reference("/")
 
