@@ -4,6 +4,7 @@ import pickle
 
 import discord
 import nltk
+from nltk import ngrams
 
 nltk.download('wordnet')
 from discord.ext import commands
@@ -43,15 +44,22 @@ async def on_message(message):
     stext = ' '.join(text)
     ttext = vectorizer.transform([stext]) # transformed text
     dact = classifier.predict(ttext)[0] # get dialog act of stext
-    if dact == 'whQuestion':
-        for word in text:
-            lemma = lemmatizer.lemmatize(word.lower())
-            if lemma in mydict:
-                reply = 'FinBot recognized ' + word  +': ' + mydict[lemma]
-                await message.reply(reply, mention_author=True)
-                print("recognized")
-    await bot.process_commands(message)
 
+    if dact == 'whQuestion':
+        gram = 4
+        for i in range(gram):
+            ngram = ngrams(text,i)
+            for gram in ngram:
+                sgram = " ".join(gram)
+                lemma = lemmatizer.lemmatize(sgram.lower())
+                if lemma in mydict:
+                    print("orig")
+                    reply = 'FinBot recognized ' + sgram  +': ' + mydict[lemma]
+                    await message.reply(reply, mention_author=True)
+                    print("recognized")
+            
+    await bot.process_commands(message)
+    
         
 @bot.command(name='retire', help='How much money do I need to retire? Input monthly budget.')
 async def retire(ctx, monthly_budget: int):
