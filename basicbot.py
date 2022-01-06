@@ -21,5 +21,7 @@ class MyClient(discord.Client):
                 print('FinBot recognized ' + word  +': ' + mydict[word])
         
 
+
+key = open('key.txt').read()
 client = MyClient()
 client.run('OTI4NDExNzU2MjE1Mjc5NzAw.YdYY0w.8CluFQ5XKcihfRTZOM7pdl63JrQ')
