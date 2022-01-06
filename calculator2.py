@@ -1,3 +1,5 @@
+from quickchart import QuickChart
+
 # Below are some financial calculator functions (Logan J)
 
 # ------------------------
@@ -89,26 +91,34 @@ def futureInflationCalculator(value, given_inflation_rate, years):
 # -------------------------------
 
 # How long until my credit card is paid off?
+# Assumes that payments are made at the end of each month, after interest has been accrued.
 # Inputs: Starting credit card balance, card interest rate (% APY), expected payment per-month
 def creditCardPayoff(card_balance, interest_rate, ppm):
+    balance_tracker = []
     if (ppm < card_balance * interest_rate):
         return "Never Paid Off: Payment Less Than Interest"
     months = 0
     if (card_balance <= 0):
-        return months
+        balance_tracker.append(0)
+        return months, accountBalanceCharting(balance_tracker, "Credit Card Debt")
     else:
         card_balance = card_balance * (1 + (interest_rate / 12)) - ppm
+        balance_tracker.append(card_balance)
         months += 1
-        creditCardPayoff(card_balance, interest_rate, ppm, months)
+        return creditCardPayoffSub(card_balance, interest_rate, ppm, balance_tracker, months)
 
 
-def creditCardPayoff(card_balance, interest_rate, ppm, months):
+def creditCardPayoffSub(card_balance, interest_rate, ppm, balance_tracker, months):
     if(card_balance <= 0):
-        return months
+        return months, accountBalanceCharting(balance_tracker, "Credit Card Debt")
     else:
         card_balance = card_balance * (1 + (interest_rate / 12)) - ppm
+        if (card_balance > 0):
+            balance_tracker.append(card_balance)
+        else:
+            balance_tracker.append(0)
         months += 1
-        creditCardPayoff(card_balance, interest_rate, ppm, months)
+        return creditCardPayoffSub(card_balance, interest_rate, ppm, balance_tracker, months)
 
 
 # -------------------------------
@@ -143,9 +153,11 @@ def maxContributionsRothIRA(age, household_income):
 # Assumption: All contributions, including match, are made at the end of the year.
 # Inputs: Current Account Value, Salary, Expected Annual Raise (in %), Expected Annual Contribution, Employer 401k Match (in %), Expected Investment Return (in %),
 #   and number of total years.
-def retirement401kcalc(current_amt, salary, annual_raise, contribution, employer_match, investment_return, years):
+# CALL THIS FUNCTION INTITIALLY WITH annual_balances AS AN EMPTY ARRAY
+def retirement401kcalc(current_amt, salary, annual_raise, contribution, employer_match, investment_return, years, annual_balances):
     if (years == 0):
-        return current_amt
+        return current_amt, accountBalanceCharting(annual_balances, "401k Account Value")
+        # Add in QuickCharts functionality
     else:
         if (contribution < (salary * employer_match)):
             match_amt = contribution
@@ -153,8 +165,32 @@ def retirement401kcalc(current_amt, salary, annual_raise, contribution, employer
             match_amt = salary * employer_match
         current_amt = (current_amt * (1 + investment_return)) + contribution + match_amt
         salary *= (1 + annual_raise)
-        years -= 1
-        retirement401kcalc(current_amt, salary, annual_raise, contribution, employer_match, investment_return, years)
+        annual_balances.append(current_amt)
+        years = years - 1
+        return retirement401kcalc(current_amt, salary, annual_raise, contribution, employer_match, investment_return, years, annual_balances)
 
 # -------------------------------
 # -------------------------------
+
+# Graph Creation Tools
+
+def accountBalanceCharting(balance_tracker, data_label):
+    qc = QuickChart()
+    qc.width = 500
+    qc.height = 300
+    qc.device_pixel_ratio = 2.0
+
+    intervals = list(range(1, len(balance_tracker) + 1))
+
+    qc.config = {
+    "type": "bar",
+    "color": "Red",
+    "data": {
+        "labels": intervals,
+        "datasets": [{
+            "label": data_label,
+            "data": balance_tracker,
+            }]
+        }
+    }
+    return qc.get_short_url()

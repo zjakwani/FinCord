@@ -6,7 +6,9 @@ import discord
 import nltk
 from nltk import ngrams
 from nltk.util import pr
+
 from Database import read_data
+
 nltk.download('wordnet')
 
 from discord.ext import commands
@@ -14,7 +16,11 @@ from nltk.stem import WordNetLemmatizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 lemmatizer = WordNetLemmatizer()
-bot = commands.Bot(command_prefix='!')
+
+help_command = commands.DefaultHelpCommand(
+    no_category = 'Commands'
+)
+bot = commands.Bot(command_prefix='!', help_command = help_command)
 
 mydict = read_data()
 
