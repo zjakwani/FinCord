@@ -10,3 +10,6 @@ def get_card_info(csv_path):
             name, purchase_rate, transfer_info, annual_fee, credit_level, description = row
             card_info[name] = {'purchase rate': purchase_rate, 'transfer info': transfer_info, 'annual fee': annual_fee, 'credit level': credit_level, 'description': description}
     return card_info
+
+def compare_cards(cards, card_info):
+    pass
