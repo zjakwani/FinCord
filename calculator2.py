@@ -96,7 +96,7 @@ def creditCardPayoff(card_balance, interest_rate, ppm):
     months = 0
     if (card_balance <= 0):
         balance_tracker.append(0)
-        return months, valueTimeCharting(balance_tracker, "Credit Card Debt", "rgb(210, 46, 30)")
+        return "Your credit card balance will take " + months + "months to pay off.", valueTimeCharting(balance_tracker, "Credit Card Debt", "rgb(210, 46, 30)")
     else:
         card_balance = card_balance * (1 + (interest_rate / 12)) - ppm
         balance_tracker.append(card_balance)
