@@ -1,4 +1,7 @@
-# Below are some financial calculator functions (Logan J)
+from quickchart import QuickChart
+
+# Below are some financial calculator functions (Logan)
+# At the bottom of this document is code related to QuickCharts functionality
 
 # ------------------------
 # LOAN FOCUSED CALCULATORS
@@ -7,18 +10,21 @@
 # Calculates total cost of a loan
 # Inputs: Starting loan amount (principal), interest rate (% APR as a decimal), and length of the loan term in months
 def loanCalculator(principal, apr, term_in_months):
-    return "The estimated total cost of your loan is " + principal * (1 + (apr/12))**term_in_months
+    apr /= 100
+    return "The estimated total cost of your loan is $" + str(int(principal * (1 + (apr/12))**term_in_months))
 
 # Compares two loans. Loan terms in years. Returns the total cost of Loan 1, total cost of Loan 2, and then the dollar difference between the loans' totals.
 # Inputs: 
 def loanComparison(loanAmt, loanInterest1, loanTerm1, loanInterest2, loanTerm2):
+    loanInterest1 /= 100
+    loanInterest2 /= 100
     loanCost1 = loanAmt * (1 + loanInterest1)**loanTerm1
     loanCost2 = loanAmt * (1 + loanInterest2)**loanTerm2
     if loanCost1 < loanCost2:
-        betterLoan = "the first loan"
+        betterLoan = "The first loan"
     else:
-        betterLoan = "the second loan"
-    return "The total cost of the first loan is" + loanCost1 + ". The total cost of the second loan is " + loanCost2 +".\n The difference between the loans is " + abs(loanCost1 - loanCost2) + ". " + betterLoan + " cost less in total." 
+        betterLoan = "The second loan"
+    return "The total cost of the first loan is $" + str(int(loanCost1)) + ". The total cost of the second loan is $" + str(int(loanCost2)) +". The difference between the loans is $" + str(int(abs(loanCost1 - loanCost2))) + ". " + betterLoan + " cost less in total." 
 
 # Returns the percent of income put towards loans in order to pay them off within a given number of years.
 # Assumes interest still accumulates while in school and that payments only begin after graduation.
@@ -38,17 +44,6 @@ def collegeAffordibilityCalculator(balance, tuition_rate, years_of_school, loan_
     percentCostOfSalary = yearly_cost / expected_postgrad_salary
 
     return yearly_cost, percentCostOfSalary
-
-            
-
-
-            
-
-
-# -------------------------------
-# -------------------------------
-
-
 
 # ------------------------------
 # INVESTMENT FOCUSED CALCULATORS
@@ -71,13 +66,15 @@ def investmentCAGRCalculator(principal, final_amt, time_in_years):
     return ((final_amt / principal)**(1/time_in_years)) - 1
 
 # Given a rate of inflation, calculates the "real" value of dollar amount after a given number of years.
-# Inputs: Starting value, given inflation rate, and number of years
-def futureInflationCalculator(value, given_inflation_rate, years):
+# Inputs: Starting value, given inflation rate (as a %), and number of years
+def futureInflationCalculator(value, given_inflation_rate, years, value_tracker):
     if (years == 0):
-        return value
+        return value, valueTimeCharting(value_tracker, "Dollar Value (Real)", "rgb(210, 46, 30)")
     else:
-        value = value * (1 - given_inflation_rate)
+        value_tracker.append(value)
+        value = value * ((100 - (given_inflation_rate)) / 100)
         years -= 1
+        return futureInflationCalculator(value, given_inflation_rate, years, value_tracker)
 
 # -------------------------------
 # -------------------------------
@@ -89,26 +86,37 @@ def futureInflationCalculator(value, given_inflation_rate, years):
 # -------------------------------
 
 # How long until my credit card is paid off?
+# Assumes that payments are made at the end of each month, after interest has been accrued.
 # Inputs: Starting credit card balance, card interest rate (% APY), expected payment per-month
 def creditCardPayoff(card_balance, interest_rate, ppm):
-    if (ppm < card_balance * interest_rate):
+    balance_tracker = []
+    interest_rate /= 100
+    if (ppm < card_balance * interest_rate / 12):
         return "Never Paid Off: Payment Less Than Interest"
     months = 0
     if (card_balance <= 0):
-        return months
+        balance_tracker.append(0)
+        return months, valueTimeCharting(balance_tracker, "Credit Card Debt", "rgb(210, 46, 30)")
     else:
         card_balance = card_balance * (1 + (interest_rate / 12)) - ppm
+        balance_tracker.append(card_balance)
         months += 1
-        creditCardPayoff(card_balance, interest_rate, ppm, months)
+        return creditCardPayoffSub(card_balance, interest_rate, ppm, balance_tracker, months)
 
 
-def creditCardPayoff(card_balance, interest_rate, ppm, months):
+def creditCardPayoffSub(card_balance, interest_rate, ppm, balance_tracker, months):
     if(card_balance <= 0):
-        return months
+        output = str(months) + " months."
+        output += "\n" + valueTimeCharting(balance_tracker, "Credit Card Debt", "rgb(210, 46, 30)")
+        return output
     else:
         card_balance = card_balance * (1 + (interest_rate / 12)) - ppm
+        if (card_balance > 0):
+            balance_tracker.append(card_balance)
+        else:
+            balance_tracker.append(0)
         months += 1
-        creditCardPayoff(card_balance, interest_rate, ppm, months)
+        return creditCardPayoffSub(card_balance, interest_rate, ppm, balance_tracker, months)
 
 
 # -------------------------------
@@ -143,9 +151,16 @@ def maxContributionsRothIRA(age, household_income):
 # Assumption: All contributions, including match, are made at the end of the year.
 # Inputs: Current Account Value, Salary, Expected Annual Raise (in %), Expected Annual Contribution, Employer 401k Match (in %), Expected Investment Return (in %),
 #   and number of total years.
-def retirement401kcalc(current_amt, salary, annual_raise, contribution, employer_match, investment_return, years):
+# CALL THIS FUNCTION INTITIALLY WITH annual_balances AS AN EMPTY ARRAY
+def retirement401kcalc(current_amt, salary, annual_raise, contribution, employer_match, investment_return, years, annual_balances):
+    annual_raise /= 100
+    employer_match /= 100
+    investment_return /= 100
     if (years == 0):
-        return current_amt
+        # Returns the final account value, and a link to the graph for the account.
+        output = "Final account value: $" + str(int(current_amt))
+        output += "\n" + valueTimeCharting(annual_balances, "401k Account Value", "rgb(0, 72, 121)")
+        return output
     else:
         if (contribution < (salary * employer_match)):
             match_amt = contribution
@@ -153,8 +168,40 @@ def retirement401kcalc(current_amt, salary, annual_raise, contribution, employer
             match_amt = salary * employer_match
         current_amt = (current_amt * (1 + investment_return)) + contribution + match_amt
         salary *= (1 + annual_raise)
-        years -= 1
-        retirement401kcalc(current_amt, salary, annual_raise, contribution, employer_match, investment_return, years)
+        annual_balances.append(current_amt)
+        years = years - 1
+        return retirement401kcalc(current_amt, salary, annual_raise, contribution, employer_match, investment_return, years, annual_balances)
 
 # -------------------------------
 # -------------------------------
+
+# Graph Creation Tools
+
+def valueTimeCharting(tracker, data_label, color):
+    qc = QuickChart()
+    qc.width = 500
+    qc.height = 300
+    qc.device_pixel_ratio = 2.0
+
+    intervals = list(range(1, len(tracker) + 1))
+
+    qc.config = {
+    "type": "bar",
+    "color": "Red",
+    "data": {
+        "labels": intervals,
+        "datasets": [{
+            "backgroundColor": color,
+            "label": data_label,
+            "data": tracker,
+            }]
+        }
+    }
+    return qc.get_short_url()
+
+
+# working test cases
+# print(loanCalculator(4000, 5, 12))
+# print(loanComparison(5000, 4, 10, 6, 5))
+# print(creditCardPayoff(200, 6,40))
+# print(retirement401kcalc(40000, 60000, 3, 10000, 1, 5, 10, []))

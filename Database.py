@@ -32,7 +32,7 @@ def read_data():
 
         term = lemmatizer.lemmatize(str(val.get('term')).lower())
         map_dict[term] = str(val.get('definition'))
-        
+
     return map_dict
 
 # Function will only be run when explicitly ran as a main python file
@@ -57,6 +57,20 @@ def push_data():
             }
 
             ref.push(data_to_send)
+# Client code will be able to add their own term(s) and definition(s) using this function 
+def add_term_def(term, definition):
+    url_key = open("api_key.txt").read()
+    firebase_admin.initialize_app(cred, {
+        'databaseURL': url_key
+    })
+    ref = db.reference("/")
+    if term and definition:
+        data_to_send = {
+            'term': term,
+            'definition': definition
+        }
+
+        ref.push(data_to_send)
 
 
 
