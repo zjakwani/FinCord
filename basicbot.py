@@ -4,6 +4,7 @@ import pickle
 
 import discord
 import nltk
+from nltk import ngrams
 
 nltk.download('wordnet')
 from discord.ext import commands
@@ -44,41 +45,19 @@ async def on_message(message):
     ttext = vectorizer.transform([stext]) # transformed text
     dact = classifier.predict(ttext)[0] # get dialog act of stext
 
-    twoFound = False
-    span = 2
-    doubleOne = [" ".join(text[i:i+span]) for i in range(0, len(text), span)]
-    doubleTwo = [" ".join(text[i:i+span]) for i in range(1, len(text), span)]
-
     if dact == 'whQuestion':
-
-        for word in doubleOne:
-            lemma = lemmatizer.lemmatize(word.lower())
-            if lemma in mydict:
-                print("doubleOne")
-                reply = 'FinBot recognized ' + word  +': ' + mydict[lemma]
-                await message.reply(reply, mention_author=True)
-                print("recognized")
-                twoFound = True
-    
-        if not twoFound:
-            for word in doubleTwo:
-                lemma = lemmatizer.lemmatize(word.lower())
-                if lemma in mydict:
-                    print("doubleTwo")
-                    reply = 'FinBot recognized ' + word  +': ' + mydict[lemma]
-                    await message.reply(reply, mention_author=True)
-                    print("recognized")
-                    twoFound = True
-
-        if not twoFound:
-            for word in text:
-                lemma = lemmatizer.lemmatize(word.lower())
+        gram = 4
+        for i in range(gram):
+            ngram = ngrams(text,i)
+            for gram in ngram:
+                sgram = " ".join(gram)
+                lemma = lemmatizer.lemmatize(sgram.lower())
                 if lemma in mydict:
                     print("orig")
-                    reply = 'FinBot recognized ' + word  +': ' + mydict[lemma]
+                    reply = 'FinBot recognized ' + sgram  +': ' + mydict[lemma]
                     await message.reply(reply, mention_author=True)
                     print("recognized")
-                    twoFound = True
+            
     await bot.process_commands(message)
     
         
