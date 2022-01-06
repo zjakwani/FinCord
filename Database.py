@@ -26,7 +26,6 @@ def push_data():
 
     reader = csv.reader(open("financial_terms.csv", "r"))
 
-    counter = 0
     for row in reader:
 
         if row[1]:
