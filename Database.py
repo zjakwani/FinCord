@@ -1,28 +1,49 @@
 import csv
+import nltk
+from nltk.util import pr
+nltk.download('omw-1.4')
+
+import firebase_admin
+nltk.download('wordnet')
+from nltk.stem import WordNetLemmatizer
+
+from firebase_admin import credentials
+
+from firebase_admin import db
+
+cred = credentials.Certificate("key.json")
+
+lemmatizer = WordNetLemmatizer()
 
 
-# Function will only be run when explicitly ran as a main python file
-# since new words may be periodically added
-
-
-
-def push_data():
-    import firebase_admin
-    
-    from firebase_admin import credentials
-
-    from firebase_admin import db
-
-    cred = credentials.Certificate("key.json")
-
+# Client code will call this function when the dictionary of financial of terms and 
+# their respective definitions will need to be populated. 
+def read_data():
+    map_dict = {}
+   
     url_key = open("api_key.txt").read()
     firebase_admin.initialize_app(cred, {
         'databaseURL': url_key
     })
     ref = db.reference("/")
 
-    print(ref.get())
+    snapshot = ref.get()
+    for key, val in snapshot.items():
 
+        term = lemmatizer.lemmatize(str(val.get('term')).lower())
+        map_dict[term] = str(val.get('definition'))
+        
+    return map_dict
+
+# Function will only be run when explicitly ran as a main python file
+# since new words may be periodically added
+def push_data():
+
+    url_key = open("api_key.txt").read()
+    firebase_admin.initialize_app(cred, {
+        'databaseURL': url_key
+    })
+    ref = db.reference("/")
 
     reader = csv.reader(open("financial_terms.csv", "r"))
 
@@ -36,8 +57,9 @@ def push_data():
             }
 
             ref.push(data_to_send)
-            break
+
 
 
 if __name__ == '__main__':
     push_data()
+    # read_data()

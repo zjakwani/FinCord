@@ -5,21 +5,31 @@ import pickle
 import discord
 import nltk
 from nltk import ngrams
+from nltk.util import pr
+
+from Database import read_data
 
 nltk.download('wordnet')
+
 from discord.ext import commands
 from nltk.stem import WordNetLemmatizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 lemmatizer = WordNetLemmatizer()
-bot = commands.Bot(command_prefix='!')
 
-mydict = {}
-reader = csv.reader(open("financial_terms.csv", "r"))
-for rows in reader:
-    k = lemmatizer.lemmatize(rows[0].lower())
-    v = rows[1]
-    mydict[k] = v
+help_command = commands.DefaultHelpCommand(
+    no_category = 'Commands'
+)
+bot = commands.Bot(command_prefix='!', help_command = help_command)
+
+mydict = read_data()
+
+# Old way we were reading in the data. Can delete later 
+# reader = csv.reader(open("financial_terms.csv", "r"))
+# for rows in reader:
+#     k = lemmatizer.lemmatize(rows[0].lower())
+#     v = rows[1]
+#     mydict[k] = v
 
 f = open('nlp/classifier.pickle', 'rb')
 classifier = pickle.load(f)
@@ -57,6 +67,7 @@ async def on_message(message):
                     reply = 'FinBot recognized ' + sgram  +': ' + mydict[lemma]
                     await message.reply(reply, mention_author=True)
                     print("recognized")
+
             
     await bot.process_commands(message)
     
