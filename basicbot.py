@@ -1,4 +1,5 @@
 import discord
+import os
 
 class MyClient(discord.Client):
     async def on_ready(self):
@@ -7,5 +8,7 @@ class MyClient(discord.Client):
     async def on_message(self, message):
         print('Message from {0.author}: {0.content}'.format(message))
 
+
+key = open('key.txt').read()
 client = MyClient()
-client.run('OTI4NDExNzU2MjE1Mjc5NzAw.YdYY0w.-jwMwEW2rGNrUPH9Mn28aMLbAAE')
+client.run(key)
