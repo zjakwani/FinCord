@@ -117,6 +117,21 @@ async def retirement401kcalc(ctx, current_amt: int, salary: int, annual_raise: i
     res = calculator2.retirement401kcalc(current_amt, salary, annual_raise, contribution, employer_match, investment_return, years, [])
     await ctx.send(res)
 
+@bot.command(name='returns', help="Calculates 'real' investment returns given an initial value, and average annual growth rate, an average annual inflation rate, a fee amount as percent, and a tax rate as percent. Essentially, values are used to calculate 'real' investment returns, after inflation, fees, and taxes.")
+async def realInvestmentReturns(ctx, value: int, growth_rate: int, inflation_rate: int, fee: int, tax_rate: int, years: int):
+    res = calculator2.realInvestmentReturns(value, growth_rate, inflation_rate, fee, tax_rate, years)
+    await ctx.send(res)
+
+@bot.command(name='cagr', help="Calculate annual rate of return of investment based on beginning amount, final amount and number of years. Inputs: Starting amount, ending amount, total time in years.")
+async def investmentCAGRCalculator(ctx, principal: int, final_amt: int, time_in_years: int):
+    res = calculator2.investmentCAGRCalculator(principal, final_amt, time_in_years)
+    await ctx.send(res)
+
+@bot.command(name='max401k', help="# Returns the maximum amount of yearly contributions allowed to a 401k based on age (based on 2022). Inputs: Age")
+async def retirement401kcalc(ctx, age: int):
+    res = calculator2.maxContributions401k(age)
+    await ctx.send(res)
+
 key = open('key.txt').read()
 bot.run(key)
 
