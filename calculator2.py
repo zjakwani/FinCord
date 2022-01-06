@@ -1,6 +1,7 @@
 from quickchart import QuickChart
 
-# Below are some financial calculator functions (Logan J)
+# Below are some financial calculator functions (Logan)
+# At the bottom of this document is code related to QuickCharts functionality
 
 # ------------------------
 # LOAN FOCUSED CALCULATORS
@@ -41,17 +42,6 @@ def collegeAffordibilityCalculator(balance, tuition_rate, years_of_school, loan_
 
     return yearly_cost, percentCostOfSalary
 
-            
-
-
-            
-
-
-# -------------------------------
-# -------------------------------
-
-
-
 # ------------------------------
 # INVESTMENT FOCUSED CALCULATORS
 # ------------------------------
@@ -74,10 +64,11 @@ def investmentCAGRCalculator(principal, final_amt, time_in_years):
 
 # Given a rate of inflation, calculates the "real" value of dollar amount after a given number of years.
 # Inputs: Starting value, given inflation rate, and number of years
-def futureInflationCalculator(value, given_inflation_rate, years):
+def futureInflationCalculator(value, given_inflation_rate, years, value_tracker):
     if (years == 0):
-        return value
+        return value, valueTimeCharting(value_tracker, "Dollar Value (Real)")
     else:
+        value_tracker.append(value)
         value = value * (1 - given_inflation_rate)
         years -= 1
 
@@ -100,7 +91,7 @@ def creditCardPayoff(card_balance, interest_rate, ppm):
     months = 0
     if (card_balance <= 0):
         balance_tracker.append(0)
-        return months, accountBalanceCharting(balance_tracker, "Credit Card Debt")
+        return months, valueTimeCharting(balance_tracker, "Credit Card Debt")
     else:
         card_balance = card_balance * (1 + (interest_rate / 12)) - ppm
         balance_tracker.append(card_balance)
@@ -110,7 +101,7 @@ def creditCardPayoff(card_balance, interest_rate, ppm):
 
 def creditCardPayoffSub(card_balance, interest_rate, ppm, balance_tracker, months):
     if(card_balance <= 0):
-        return months, accountBalanceCharting(balance_tracker, "Credit Card Debt")
+        return months, valueTimeCharting(balance_tracker, "Credit Card Debt")
     else:
         card_balance = card_balance * (1 + (interest_rate / 12)) - ppm
         if (card_balance > 0):
@@ -156,8 +147,8 @@ def maxContributionsRothIRA(age, household_income):
 # CALL THIS FUNCTION INTITIALLY WITH annual_balances AS AN EMPTY ARRAY
 def retirement401kcalc(current_amt, salary, annual_raise, contribution, employer_match, investment_return, years, annual_balances):
     if (years == 0):
-        return current_amt, accountBalanceCharting(annual_balances, "401k Account Value")
-        # Add in QuickCharts functionality
+        # Returns the final account value, and a link to the graph for the account.
+        return current_amt, valueTimeCharting(annual_balances, "401k Account Value")
     else:
         if (contribution < (salary * employer_match)):
             match_amt = contribution
@@ -174,13 +165,13 @@ def retirement401kcalc(current_amt, salary, annual_raise, contribution, employer
 
 # Graph Creation Tools
 
-def accountBalanceCharting(balance_tracker, data_label):
+def valueTimeCharting(tracker, data_label):
     qc = QuickChart()
     qc.width = 500
     qc.height = 300
     qc.device_pixel_ratio = 2.0
 
-    intervals = list(range(1, len(balance_tracker) + 1))
+    intervals = list(range(1, len(tracker) + 1))
 
     qc.config = {
     "type": "bar",
@@ -189,7 +180,7 @@ def accountBalanceCharting(balance_tracker, data_label):
         "labels": intervals,
         "datasets": [{
             "label": data_label,
-            "data": balance_tracker,
+            "data": tracker,
             }]
         }
     }
