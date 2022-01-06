@@ -76,10 +76,11 @@ async def on_message(message):
 
 card_info = creditinfo.get_card_info('credit_info.csv')
 
-@bot.command(name='compare', help='compare capital one credit cards')
-async def compare(ctx, c1: str, c2: str):
+@bot.command(name='compare', help='Compare capital one credit cards. Input card names seperated by /')
+async def compare(ctx, *, message):
+    c1, c2 = message.split('/')
     res = creditinfo.compare_cards(c1, c2, card_info)
-    await ctx.send(embed=res)
+    await ctx.send(embed =res)
         
 @bot.command(name='retire', help='How much money do I need to retire? Input monthly budget.')
 async def retire(ctx, monthly_budget: int):
