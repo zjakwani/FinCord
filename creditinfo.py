@@ -1,6 +1,7 @@
 import csv
 from collections import defaultdict
 from tabulate import tabulate
+import discord
 
 def get_card_info(csv_path):
     card_info = defaultdict(str)
@@ -43,7 +44,8 @@ def compare_cards(c1, c2, card_info):
     descrip2 = c2_data[-1]
     out_str = c1 + ': ' + descrip1 + '\n\n' + c2 + ': ' + descrip2 + '\n\n'
     out_str += tabulate(data, headers=['', c1, c2])
-    return out_str
+    return discord.Embed(title = 'Features Comparison', description=out_str)
+    
 
 card_info = get_card_info('credit_info.csv')
 print(compare_cards('Venture Rewards', 'Platinum Mastercard', card_info))
