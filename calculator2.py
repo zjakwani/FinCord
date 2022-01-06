@@ -69,11 +69,12 @@ def investmentCAGRCalculator(principal, final_amt, time_in_years):
 # Inputs: Starting value, given inflation rate, and number of years
 def futureInflationCalculator(value, given_inflation_rate, years, value_tracker):
     if (years == 0):
-        return value, valueTimeCharting(value_tracker, "Dollar Value (Real)")
+        return value, valueTimeCharting(value_tracker, "Dollar Value (Real)", "rgb(210, 46, 30)")
     else:
         value_tracker.append(value)
         value = value * (1 - given_inflation_rate)
         years -= 1
+        return futureInflationCalculator(value, given_inflation_rate, years, value_tracker)
 
 # -------------------------------
 # -------------------------------
@@ -95,7 +96,7 @@ def creditCardPayoff(card_balance, interest_rate, ppm):
     months = 0
     if (card_balance <= 0):
         balance_tracker.append(0)
-        return months, valueTimeCharting(balance_tracker, "Credit Card Debt")
+        return months, valueTimeCharting(balance_tracker, "Credit Card Debt", "rgb(210, 46, 30)")
     else:
         card_balance = card_balance * (1 + (interest_rate / 12)) - ppm
         balance_tracker.append(card_balance)
@@ -106,7 +107,7 @@ def creditCardPayoff(card_balance, interest_rate, ppm):
 def creditCardPayoffSub(card_balance, interest_rate, ppm, balance_tracker, months):
     if(card_balance <= 0):
         output = str(months) + " months."
-        output += "\n" + valueTimeCharting(balance_tracker, "Credit Card Debt")
+        output += "\n" + valueTimeCharting(balance_tracker, "Credit Card Debt", "rgb(210, 46, 30)")
         return output
     else:
         card_balance = card_balance * (1 + (interest_rate / 12)) - ppm
@@ -158,7 +159,7 @@ def retirement401kcalc(current_amt, salary, annual_raise, contribution, employer
     if (years == 0):
         # Returns the final account value, and a link to the graph for the account.
         output = "Final account value: $" + str(int(current_amt))
-        output += "\n" + valueTimeCharting(annual_balances, "401k Account Value")
+        output += "\n" + valueTimeCharting(annual_balances, "401k Account Value", "rgb(0, 72, 121)")
         return output
     else:
         if (contribution < (salary * employer_match)):
@@ -176,7 +177,7 @@ def retirement401kcalc(current_amt, salary, annual_raise, contribution, employer
 
 # Graph Creation Tools
 
-def valueTimeCharting(tracker, data_label):
+def valueTimeCharting(tracker, data_label, color):
     qc = QuickChart()
     qc.width = 500
     qc.height = 300
@@ -190,6 +191,7 @@ def valueTimeCharting(tracker, data_label):
     "data": {
         "labels": intervals,
         "datasets": [{
+            "backgroundColor": color,
             "label": data_label,
             "data": tracker,
             }]
