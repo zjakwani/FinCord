@@ -129,9 +129,10 @@ async def investmentCAGRCalculator(ctx, principal: int, final_amt: int, time_in_
     await ctx.send(res)
 
 @bot.command(name='max401k', help="# Returns the maximum amount of yearly contributions allowed to a 401k based on age (based on 2022). Inputs: Age")
-async def retirement401kcalc(ctx, age: int):
-    res = maxContributions401k(age)
-    await ctx.send(res)
+async def retirement401kcalc(ctx, current_amt: int, salary: int, annual_raise: int, contribution: int, employer_match: int, investment_return: int, years: int):
+    res = retirement401kcalc(current_amt, salary, annual_raise, contribution, employer_match, investment_return, years, [])
+    embed=discord.Embed(title="401k Retirement Planner", url=res[0], image=res[1])
+    await ctx.send(embed=embed)
 
 key = open('key.txt').read()
 bot.run(key)
