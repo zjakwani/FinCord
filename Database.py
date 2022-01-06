@@ -6,6 +6,9 @@ import csv
 
 
 
+
+
+
 def push_data():
     import firebase_admin
     
@@ -36,7 +39,7 @@ def push_data():
             }
 
             ref.push(data_to_send)
-            break
+
 
 
 if __name__ == '__main__':
