@@ -68,8 +68,8 @@ async def on_message(message):
                 lemma = lemmatizer.lemmatize(sgram.lower())
                 if lemma in mydict:
                     print("orig")
-                    reply = 'FinBot recognized ' + sgram  +': ' + mydict[lemma]
-                    await message.reply(reply, mention_author=True)
+                    reply=discord.Embed(title=sgram, description=mydict[lemma])
+                    await message.reply(embed=reply, mention_author=True)
                     print("recognized")
 
             
