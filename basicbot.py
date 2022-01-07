@@ -141,7 +141,9 @@ async def loanComparison_(ctx, loanAmt: int, loanInterest1: int, loanTerm1: int,
 @bot.command(name='credit', help="How long until my credit card is paid off? Assumes that payments are made at the end of each month, after interest has been accrued. Inputs: Starting credit card balance, card interest rate (% APY), expected payment per-month.")
 async def credit_(ctx, card_balance: int, interest_rate: int, ppm: int):
     res = creditCardPayoff(card_balance, interest_rate, ppm)
-    await ctx.send(res)
+    e=discord.Embed(title="401k Retirement Planner", description=res[0])
+    e.set_image(url=res[1])
+    await ctx.send(embed=e)
 
 @bot.command(name='max401k', help="401k retirement planner. Assumption: All contributions, including match, are made at the end of the year. Inputs: Current Account Value, Salary, Expected Annual Raise (in %), Expected Annual Contribution, Employer 401k Match (in %), Expected Investment Return (in %), and number of total years.")
 async def max401kcalc_(ctx, age: int):
