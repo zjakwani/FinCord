@@ -96,7 +96,7 @@ async def stockInfo_(ctx, ticker: str):
     div_yield = res.get("dividendYield")
 
     if (div_yield != None):
-        div_yield = str(round(float(div_yield)) * 100, 2) + "%"
+        div_yield = str(round(float(div_yield) * 100, 2)) + "%"
     e.add_field(name="Dividend (%)", value= div_yield, inline=True)
     e.add_field(name= "Day High", value=res.get("dayHigh"), inline=True)
     e.add_field(name="52-wk High", value=res.get("fiftyTwoWeekHigh"), inline=True)
