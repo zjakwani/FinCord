@@ -43,7 +43,7 @@ def collegeAffordibilityCalculator(balance, tuition_rate, years_of_school, loan_
     yearly_cost = (balance * (1 + loan_interest)**years_until_paid) / 12
     percentCostOfSalary = yearly_cost / expected_postgrad_salary
 
-    return yearly_cost, percentCostOfSalary
+    return "The yearly cost of your loans is about $" + str(int(yearly_cost)) + " and you should put " + str(int(percentCostOfSalary)) + "% of your salary towards paying it off!"
 
 # ------------------------------
 # INVESTMENT FOCUSED CALCULATORS
@@ -69,7 +69,8 @@ def investmentCAGRCalculator(principal, final_amt, time_in_years):
 # Inputs: Starting value, given inflation rate (as a %), and number of years
 def futureInflationCalculator(value, given_inflation_rate, years, value_tracker):
     if (years == 0):
-        return value, valueTimeCharting(value_tracker, "Dollar Value (Real)", "rgb(210, 46, 30)")
+        output = ["Value after inflation: $" + str(int(value)), valueTimeCharting(value_tracker, "Dollar Value (Real)", "rgb(210, 46, 30)")]
+        return output
     else:
         value_tracker.append(value)
         value = value * ((100 - (given_inflation_rate)) / 100)
@@ -106,8 +107,7 @@ def creditCardPayoff(card_balance, interest_rate, ppm):
 
 def creditCardPayoffSub(card_balance, interest_rate, ppm, balance_tracker, months):
     if(card_balance <= 0):
-        output = str(months) + " months."
-        output += "\n" + valueTimeCharting(balance_tracker, "Credit Card Debt", "rgb(210, 46, 30)")
+        output = ["In roughly " + str(months) + " months your card will be fully paid off.", valueTimeCharting(balance_tracker, "Credit Card Debt", "rgb(210, 46, 30)")]
         return output
     else:
         card_balance = card_balance * (1 + (interest_rate / 12)) - ppm
@@ -154,12 +154,9 @@ def maxContributionsRothIRA(age, household_income):
 #   and number of total years.
 # CALL THIS FUNCTION INTITIALLY WITH annual_balances AS AN EMPTY ARRAY
 def retirement401kcalc(current_amt, salary, annual_raise, contribution, employer_match, investment_return, years, annual_balances):
-    annual_raise /= 100
-    employer_match /= 100
-    investment_return /= 100
     if (years == 0):
         # Returns the final account value, and a link to the graph for the account.
-        output = ["Final account value: $" + str(int(current_amt), valueTimeCharting(annual_balances, "401k Account Value", "rgb(0, 72, 121)"))]
+        output = ["Final account value: $" + str(int(current_amt)), valueTimeCharting(annual_balances, "401k Account Value", "rgb(0, 72, 121)")]
         return output
     else:
         if (contribution < (salary * employer_match)):
