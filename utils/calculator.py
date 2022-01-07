@@ -57,9 +57,9 @@ def retirement_age(monthly_budget, save_annually, amount_saved, cur_age, interes
 
 def all_commands():
     output = "Use !help followed by any command to show details on its usage.\n"
-    output += "\nRetirement Predictions: !retire !when"
-    output += "\nRetirement Savings Calculations: !401k !max401k !roth"
-    output += "\nCredit card calculation: !credit"
-    output += "\nInvestment focused calculations: !returns !inflation !cagr"
-    output += "\nLoan focused calculations: !loan !loancomp !college"
+    output += "\nRetirement Predictions:  !retire  !when"
+    output += "\nRetirement Savings Calculations:  !401k  !max401k  !roth"
+    output += "\nCredit Card Calculation:  !credit"
+    output += "\nInvestment Focused Calculations:  !returns  !inflation  !cagr"
+    output += "\nLoan Focused Calculations:  !loan  !loancomp  !college"
     return output
