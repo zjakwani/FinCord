@@ -10,8 +10,8 @@ from nltk.util import pr
 from utils.calculator import *
 from utils.calculator2 import *
 from utils.creditinfo import *
-from utils.stock_info import *
 from utils.Database import read_data
+from utils.stock_info import *
 
 nltk.download('wordnet')
 
@@ -190,7 +190,8 @@ async def collegeAffordibilityCalculator_(ctx, balance: int, tuition_rate: int, 
 @bot.command(name='list', help="Lists all commands.")
 async def realInvestmentReturns_(ctx):
     res = all_commands()
-    await ctx.send(res)
+    e=discord.Embed(title="List of Commands", description=res)
+    await ctx.send(embed=e)
 
 key = open('key.txt').read()
 bot.run(key)
