@@ -141,7 +141,7 @@ async def loanComparison_(ctx, loanAmt: int, loanInterest1: int, loanTerm1: int,
 @bot.command(name='credit', help="How long until my credit card is paid off? Assumes that payments are made at the end of each month, after interest has been accrued. Inputs: Starting credit card balance, card interest rate (% APY), expected payment per-month.")
 async def credit_(ctx, card_balance: int, interest_rate: int, ppm: int):
     res = creditCardPayoff(card_balance, interest_rate, ppm)
-    e=discord.Embed(title="401k Retirement Planner", description=res[0])
+    e=discord.Embed(title="Credit Card Payoff Estimator", description=res[0])
     e.set_image(url=res[1])
     await ctx.send(embed=e)
 

@@ -107,7 +107,7 @@ def creditCardPayoff(card_balance, interest_rate, ppm):
 
 def creditCardPayoffSub(card_balance, interest_rate, ppm, balance_tracker, months):
     if(card_balance <= 0):
-        output = ["In " + str(months) + "your card will be fully paid off.", valueTimeCharting(balance_tracker, "Credit Card Debt", "rgb(210, 46, 30)")]
+        output = ["In roughly " + str(months) + "your card will be fully paid off.", valueTimeCharting(balance_tracker, "Credit Card Debt", "rgb(210, 46, 30)")]
         return output
     else:
         card_balance = card_balance * (1 + (interest_rate / 12)) - ppm
