@@ -10,6 +10,7 @@ from nltk.util import pr
 from utils.calculator import *
 from utils.calculator2 import *
 from utils.creditinfo import *
+from utils.stock_info import *
 from utils.Database import read_data
 
 nltk.download('wordnet')
@@ -75,6 +76,36 @@ async def on_message(message):
     await bot.process_commands(message)
 
 card_info = get_card_info('data/credit_info.csv')
+
+@bot.command(name='stock', help="# View information about a specific stock given it's ticker (ex: \"COF\" = Capital One)")
+async def stockInfo_(ctx, ticker: str):
+    res = stockInfo(ticker)
+    print(res)
+    e=discord.Embed(title="Stock Information")
+    e.set_thumbnail(url = res.get("logo_url"))
+    e.add_field(name="Company Name: ", value=res.get("longName") + " (" + ticker + ")", inline=False)
+    e.add_field(name="Current Price", value=res.get("regularMarketPrice"), inline=True)
+    e.add_field(name="Market Cap", value="{:.2f}B".format(int(res.get("marketCap")) / 1000000000.00), inline=True)
+    e.add_field(name="Sector", value=res.get("sector"), inline=True)
+    pe_ratio = res.get("trailingPE")
+
+    if (pe_ratio != None):
+        pe_ratio = round(float(pe_ratio), 2)
+    e.add_field(name="PE (TTM)", value=pe_ratio, inline=True)
+    e.add_field(name="EPS (TTM)", value=res.get("trailingEps"), inline=True)
+    div_yield = res.get("dividendYield")
+
+    if (div_yield != None):
+        div_yield = str(round(float(div_yield)) * 100, 2) + "%"
+    e.add_field(name="Dividend (%)", value= div_yield, inline=True)
+    e.add_field(name= "Day High", value=res.get("dayHigh"), inline=True)
+    e.add_field(name="52-wk High", value=res.get("fiftyTwoWeekHigh"), inline=True)
+    e.add_field(name="52-wk Change (%)", value=str(round(float(res.get("52WeekChange")) * 100, 2)) + "%", inline=True)
+    e.add_field(name="Day Low", value=res.get("dayLow"),inline=True)
+    e.add_field(name="52-wk Low", value=res.get("fiftyTwoWeekLow"), inline=True)
+    e.add_field(name="Beta",value="{:.2f}".format(res.get("beta")), inline=True)
+
+    await ctx.send(embed=e)
 
 @bot.command(name='compare', help='Compare capital one credit cards. Input card names seperated by /')
 async def compare(ctx, *, message):
